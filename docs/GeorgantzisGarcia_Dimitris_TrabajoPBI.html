@@ -1,0 +1,362 @@
+<title>Circular Economy Research in Spain</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one A4-proportioned sheet, report-style. Condensed sans headings echo the dashboard's Bahnschrift;
+   blue = consumption and orange = production, exactly as in the Power BI theme. */
+:root {
+  --bg: #eef1f5;
+  --sheet: #ffffff;
+  --ink: #1b2431;
+  --muted: #5a6575;
+  --rule: #dde2ea;
+  --tint: #f2f5f9;
+  --navy: #243447;
+  --cons: #2b67d1;
+  --prod: #c96a06;
+  --code-bg: #f4f6f9;
+  --display: "Barlow Semi Condensed", "Bahnschrift", "Arial Narrow", system-ui, sans-serif;
+  --body: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f141b; --sheet: #161c25; --ink: #e5e9ef; --muted: #9aa5b5; --rule: #2a333f;
+    --tint: #1c232e; --navy: #a9bdd6; --cons: #6b9cf2; --prod: #f09a3c; --code-bg: #1c232e;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f141b; --sheet: #161c25; --ink: #e5e9ef; --muted: #9aa5b5; --rule: #2a333f;
+  --tint: #1c232e; --navy: #a9bdd6; --cons: #6b9cf2; --prod: #f09a3c; --code-bg: #1c232e;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--body); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px;
+}
+.sheet {
+  max-width: 860px; margin: 0 auto; background: var(--sheet);
+  padding: clamp(24px, 5vw, 56px);
+  border: 1px solid var(--rule);
+}
+h1, h2, h3, .eyebrow, .label, th, figcaption, .stat b, .meta { font-family: var(--display); }
+h1 { font-size: clamp(28px, 4.4vw, 40px); line-height: 1.08; font-weight: 700; margin: 6px 0 10px; text-wrap: balance; color: var(--navy); }
+h2 { font-size: 22px; font-weight: 700; margin: 36px 0 10px; color: var(--navy); display: flex; gap: 10px; align-items: baseline; break-after: avoid; }
+h2 .n { font-weight: 600; color: var(--muted); font-size: 15px; letter-spacing: .04em; }
+h3 { font-size: 16.5px; font-weight: 600; margin: 18px 0 4px; break-after: avoid; }
+p { margin: 0 0 10px; }
+.eyebrow { text-transform: uppercase; letter-spacing: .12em; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.meta { font-size: 14.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.meta span b { color: var(--ink); font-weight: 600; }
+.cons { color: var(--cons); font-weight: 600; }
+.prod { color: var(--prod); font-weight: 600; }
+code, .mono { font-family: var(--mono); font-size: .84em; }
+code { background: var(--code-bg); padding: 1px 4px; border-radius: 3px; overflow-wrap: anywhere; }
+pre { font-family: var(--mono); font-size: 12.5px; line-height: 1.5; background: var(--code-bg); padding: 10px 12px; margin: 6px 0 12px; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; border-left: 3px solid var(--rule); }
+ul { margin: 4px 0 12px; padding-left: 20px; }
+li { margin: 2px 0; }
+li::marker { color: var(--muted); }
+
+.lead { font-size: 17px; border-top: 2px solid var(--navy); padding-top: 14px; margin-top: 18px; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border: 1px solid var(--rule); margin: 14px 0 6px; }
+.stat { padding: 10px 12px; border-left: 1px solid var(--rule); min-width: 0; }
+.stat:first-child { border-left: 0; }
+.stat b { display: block; font-size: 25px; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 13.5px; color: var(--muted); line-height: 1.35; display: block; margin-top: 2px; }
+
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
+.cols > * { min-width: 0; }
+
+.tablewrap { overflow-x: auto; margin: 8px 0 12px; }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; line-height: 1.4; }
+th { text-align: left; font-weight: 600; font-size: 13.5px; letter-spacing: .02em; color: var(--muted); border-bottom: 1.5px solid var(--navy); padding: 5px 8px 5px 0; }
+td { border-bottom: 1px solid var(--rule); padding: 6px 8px 6px 0; vertical-align: top; }
+td:first-child { white-space: nowrap; }
+.role { font-family: var(--display); font-size: 12.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+
+figure { margin: 10px 0 14px; break-inside: avoid; }
+figure img { display: block; width: 100%; border: 1px solid var(--rule); }
+figcaption { font-size: 13.5px; color: var(--muted); margin-top: 5px; }
+
+.pages { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 22px; margin-top: 10px; }
+.page { min-width: 0; break-inside: avoid; }
+.page img { display: block; width: 100%; border: 1px solid var(--rule); }
+.page h3 { margin: 8px 0 2px; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.page h3 small { font-weight: 500; font-size: 12.5px; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+.page p { font-size: 14.5px; line-height: 1.45; margin: 0; }
+.page .sl { font-family: var(--display); font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+.find { background: var(--tint); padding: 4px 16px 6px; margin: 18px 0 8px; border-top: 2px solid var(--navy); break-inside: avoid; }
+.find h3 { margin-top: 12px; }
+.find td:first-child { font-family: var(--display); font-weight: 600; white-space: normal; width: 22%; }
+
+.foot { margin-top: 28px; padding-top: 10px; border-top: 1px solid var(--rule); font-size: 13px; color: var(--muted); font-family: var(--display); }
+
+a { color: var(--cons); }
+:focus-visible { outline: 2px solid var(--cons); outline-offset: 2px; }
+
+@media (max-width: 640px) {
+  .stats { grid-template-columns: 1fr 1fr; }
+  .stat:nth-child(3) { border-left: 0; }
+  .stat:nth-child(n+3) { border-top: 1px solid var(--rule); }
+  .cols, .pages { grid-template-columns: 1fr; }
+  td:first-child { white-space: normal; }
+}
+
+@page { size: A4; margin: 14mm 15mm 15mm; }
+@media print {
+  :root, :root[data-theme="dark"] {
+    --bg: #fff; --sheet: #fff; --ink: #1b2431; --muted: #555f6e; --rule: #d9dee6; --tint: #f2f5f9;
+    --navy: #243447; --cons: #2b67d1; --prod: #c96a06; --code-bg: #f4f6f9; color-scheme: light;
+  }
+  body { padding: 0; font-size: 8.4pt; line-height: 1.36; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .sheet { max-width: none; padding: 0; border: 0; }
+  h1 { font-size: 19pt; margin: 3pt 0 6pt; }
+  h2 { font-size: 12pt; margin: 11pt 0 4pt; }
+  h2 .n { font-size: 9pt; }
+  h3 { font-size: 9.2pt; margin: 6pt 0 2pt; }
+  p { margin: 0 0 5pt; }
+  ul { margin: 2pt 0 6pt; padding-left: 13pt; }
+  li { margin: 1pt 0; }
+  .lead { font-size: 9.2pt; margin-top: 10pt; padding-top: 8pt; }
+  .eyebrow, .meta { font-size: 7.8pt; }
+  .stats { margin: 8pt 0 2pt; }
+  .stat { padding: 5pt 8pt; }
+  .stat b { font-size: 13pt; }
+  .stat span, th, figcaption, .page .sl { font-size: 7.2pt; }
+  table, .page p { font-size: 7.8pt; line-height: 1.32; }
+  td { padding: 3pt 6pt 3pt 0; }
+  th { padding: 2pt 6pt 3pt 0; }
+  .tablewrap { margin: 4pt 0 6pt; }
+  pre { font-size: 6.9pt; white-space: pre; padding: 5pt 8pt; margin: 3pt 0 6pt; }
+  .cols { gap: 0 18pt; }
+  .pages { grid-template-columns: repeat(3, 1fr); gap: 8pt 12pt; }
+  .page h3 { margin: 4pt 0 1pt; font-size: 8.6pt; }
+  .page h3 small { font-size: 6.6pt; }
+  .model { margin: 4pt 0 6pt; }
+  .model img { width: 66%; margin: 0 auto; }
+  .model figcaption { text-align: center; }
+  .find { padding: 2pt 10pt 4pt; margin: 10pt 0 4pt; }
+  .find h3 { margin-top: 6pt; }
+  a { color: inherit; text-decoration: none; }
+  .foot { font-size: 8pt; }
+}
+</style>
+
+<main class="sheet">
+
+<div class="eyebrow">Trabajo Final · Power BI · Explanatory document</div>
+<h1>Circular economy research in Spain: consumption or production?</h1>
+<div class="meta">
+  <span><b>Dimitris Georgantzis Garcia</b></span>
+  <span>November 2026</span>
+  <span>Report: <b>GeorgantzisGarcia_Dimitris_TrabajoPBI.pbix</b></span>
+  <span>Data: OpenAlex API (section 1)</span>
+</div>
+
+<p class="lead">Circular economy (CE) research from Spanish institutions has grown nearly eightfold since 2015. The report asks which side of the economy that research looks at. Does it study <span class="cons">consumption</span>, or mostly <span class="prod">production</span>? And does research tagged with SDG 12, <i>Responsible Consumption and Production</i>, cover both sides?</p>
+
+<div class="stats">
+  <div class="stat"><b>4,127</b><span>papers, 2015–2024, from Spanish institutions</span></div>
+  <div class="stat"><b><span class="cons" style="display:inline;font-size:inherit;color:var(--cons)">24.5%</span> / <span class="prod" style="display:inline;font-size:inherit;color:var(--prod)">51.1%</span></b><span>mention consumption / production</span></div>
+  <div class="stat"><b>2.09x → 1.16x</b><span>production lead, raw and after adjusting for word frequency in each field</span></div>
+  <div class="stat"><b>2.12x vs 1.60x</b><span>production lead in SDG 12 tagged vs untagged CE papers</span></div>
+</div>
+
+<h2><span class="n">1</span>Source data</h2>
+<p><b>Source.</b> <a href="https://openalex.org">OpenAlex</a> is an open catalogue of scholarly works with a public REST API. Its data is licensed CC0, and the API returns <b>JSON</b>. I used three kinds of request:</p>
+<ul>
+  <li><b><code>works</code>, the main dataset:</b> papers with at least one Spanish institution, published 2015–2024, whose title or abstract mentions <i>circular economy</i>, <i>industrial ecology</i>, <i>industrial symbiosis</i>, <i>life cycle assessment</i> or <i>material flow analysis</i>. The fields used are ID, title, date, document type, citations, topic, journal, open access status, SDG tags and authorships with their institutions.</li>
+  <li><b><code>works</code>, filtered again:</b> the same search combined with consumption terms (<i>consumption, consumer, household, sufficiency, demand-side</i>) and with production terms (<i>production, manufacturing, producer, industrial process, supply chain</i>). These return the IDs of papers that mention each side.</li>
+  <li><b><code>institutions</code>:</b> the type, city, region and coordinates of each institution.</li>
+  <li><b>Group-by counts:</b> the number of papers per field across <i>all</i> Spanish research, with and without the same terms. They give a baseline for how common each word is anyway.</li>
+</ul>
+<p><b>Why this data.</b> It answers a real research question with live, open data rather than a prepared file. It combines several sources and needs real cleaning: nested JSON, and papers with several institutions. It has a date on every row and enough dimensions (time, discipline, journal, institution and region) for a star schema. It contains several thousand rows.</p>
+<p><b>Original data.</b> The data comes from an API, so I can't attach it as a file. The source query is below. Refreshing the report needs a free OpenAlex API key. Power BI stores the key as a <i>Web API</i> credential, so it is never saved inside the <code>.pbix</code>.</p>
+<pre>https://api.openalex.org/works?filter=authorships.institutions.country_code:ES,publication_year:2015-2024,
+title_and_abstract.search:("circular economy" OR "industrial ecology" OR "industrial symbiosis"
+OR "life cycle assessment" OR "material flow analysis")</pre>
+
+<h2><span class="n">2</span>Transformations in Power Query</h2>
+<div class="cols">
+<ul>
+  <li><b>Custom function <code>fnOpenAlex</code>:</b> pages through the API with a cursor (<code>List.Generate</code>, 200 records per page) until no next cursor is returned.</li>
+  <li><b>Text queries, not loaded:</b> <code>TopicSearch</code>, <code>BaseFilter</code>, <code>ConsumptionTerms</code> and <code>ProductionTerms</code> build the filters, so each search term is defined once.</li>
+  <li><b>Nested JSON:</b> fields pulled out of records (topic → subfield → field → domain, journal, open access).</li>
+  <li><b>Expanding lists:</b> authorships → institutions, then <b>filtering</b> to Spanish institutions only. The result is the bridge table.</li>
+  <li><b>Removing duplicates:</b> papers by ID, paper–institution pairs, topics and journals.</li>
+</ul>
+<ul>
+  <li><b>Merge queries:</b> <i>left joins</i> of the papers with the consumption and production ID lists, which create two true/false flags. An <i>inner join</i> keeps only institutions that appear in the bridge.</li>
+  <li><b>Conditional column</b> <code>Focus</code>: <i>Consumption only, Production only, Both, Neither</i>. A <code>Focus Order</code> column sorts it.</li>
+  <li><b>Replacing nulls:</b> missing flags become <i>false</i>, missing journals <i>Unknown</i> and empty baseline counts 0.</li>
+  <li><b>Filtering:</b> rows without a publication date are removed.</li>
+  <li><b>Baseline:</b> three group-by results are merged by field, and the rates are added as custom columns.</li>
+  <li><b>Data types</b> are set as the last step of every query.</li>
+</ul>
+</div>
+
+<h2><span class="n">3</span>Data model</h2>
+<div class="tablewrap"><table>
+  <thead><tr><th>Table</th><th>Role</th><th>Content</th></tr></thead>
+  <tbody>
+    <tr><td><b>FactPapers</b></td><td class="role">Fact</td><td>One row per paper (4,127): date, citations, open access, SDG 12 tag, consumption and production flags, Focus</td></tr>
+    <tr><td><b>DimDate</b></td><td class="role">Dimension</td><td>Calendar built in DAX (see below)</td></tr>
+    <tr><td><b>DimDiscipline</b></td><td class="role">Dimension</td><td>Topic → Subfield → Field → Domain hierarchy</td></tr>
+    <tr><td><b>DimSource</b></td><td class="role">Dimension</td><td>Journal or book series, publisher and type</td></tr>
+    <tr><td><b>DimInstitution</b></td><td class="role">Dimension</td><td>409 Spanish institutions: type, city, region and coordinates</td></tr>
+    <tr><td><b>BridgePaperInstitution</b></td><td class="role">Bridge</td><td>One row per paper–institution pair (a paper often has several Spanish institutions)</td></tr>
+    <tr><td><b>BaselineByField</b></td><td class="role">Support</td><td>Consumption and production word rates per field across all Spanish research. No relationship; read with <code>LOOKUPVALUE</code></td></tr>
+    <tr><td><b>StoryGroups</b></td><td class="role">Support</td><td>The four comparison groups in the SDG 12 chart. The whole-population rows are a snapshot from 2 Nov 2026</td></tr>
+    <tr><td><b>_Measures</b></td><td class="role">Measures</td><td>34 measures in 6 display folders</td></tr>
+  </tbody>
+</table></div>
+<p><b>Relationships.</b> Every dimension has a one-to-many relationship with the fact table and filters in a single direction. The exception is the bridge. The relationship from <code>FactPapers</code> to <code>BridgePaperInstitution</code> filters in <b>both directions</b>, so that choosing an institution filters its papers. Measures count rows of <code>FactPapers</code>, so a paper with three institutions is still counted once in the totals.</p>
+<p><b>Calendar.</b> <code>DimDate</code> is built with DAX: <code>CALENDAR</code> from 1 January of the first publication year to 31 December of the last one. It adds Year, Quarter, Month Number, Month, Year Month, Weekday Number and Weekday. Month and Weekday are sorted by their number columns. The table is related to <code>FactPapers[PublicationDate]</code> and marked as a date table, and <i>Auto date/time</i> is turned off.</p>
+<p><b>Hidden fields.</b> Keys (PaperID, TopicID, SourceID, InstitutionID), sort-order helpers, the raw DOI and the bridge and baseline tables are hidden from the Fields pane.</p>
+<figure class="model">
+  <img src="screenshots/00_model_view.png" alt="Power BI model view: FactPapers in the centre, related to DimDate, DimDiscipline, DimSource and, through BridgePaperInstitution, to DimInstitution. BaselineByField, StoryGroups and _Measures stand apart.">
+  <figcaption>Model view. The arrows show filter direction. The two-way arrow is on the paper–bridge relationship.</figcaption>
+</figure>
+
+<h2><span class="n">4</span>DAX: calculated columns and measures</h2>
+<p><b>Calculated columns.</b> <code>FactPapers[SDG 12 Group]</code> turns the tag into a readable label. <code>[Citation Band]</code> groups citations into 0, 1–10, 11–50, 51–200 and 200+, and <code>[Citation Band Order]</code> sorts the bands. <code>[DOI Link]</code> is set as a Web URL so the links are clickable. <code>DimInstitution[Region Complete]</code> fills the region that OpenAlex left blank for 212 of 409 institutions. I tested each institution's coordinates against Natural Earth regional boundaries, and the method reproduced all 197 regions that were already known. <code>[Map X]</code> and <code>[Map Y]</code> place each institution on the map image, with the Canary Islands moved into an inset.</p>
+<div class="tablewrap"><table>
+  <thead><tr><th>Folder</th><th>Main measures</th></tr></thead>
+  <tbody>
+    <tr><td>Volume</td><td>Papers, Citations, Citations per Paper, Institutions, Open Access %</td></tr>
+    <tr><td>Consumption vs production</td><td>Consumption % and Production % (and their counts), SDG 12 %, Focus Share %</td></tr>
+    <tr><td>Time intelligence</td><td>Papers PY, Papers YoY %, Papers Cumulative, Consumption % PY, Consumption % YoY (pp)</td></tr>
+    <tr><td>Baseline comparison</td><td>Expected Consumption %, Expected Production %, Consumption Lift, Production Lift</td></tr>
+    <tr><td>Story</td><td>Production Lead, Production Lead Adjusted, Story Consumption % and Story Production %</td></tr>
+    <tr><td>Narrative</td><td>Msg Growth, Msg Gap, Msg Word, Msg Label: text measures for the key messages</td></tr>
+  </tbody>
+</table></div>
+<div class="cols">
+<div>
+<h3>Time intelligence</h3>
+<p>These measures use the marked calendar. <i>Papers PY</i> drives the "Papers vs Papers PY" line, and <i>Consumption % YoY</i> gives the −1.9 pp card.</p>
+<pre>Papers PY = CALCULATE ( [Papers],
+    SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+Papers YoY % = DIVIDE ( [Papers] - [Papers PY],
+    [Papers PY] )</pre>
+</div>
+<div>
+<h3>Baseline and lift</h3>
+<p><i>Expected Consumption %</i> applies each field's rate across all Spanish research to the current selection's mix of fields. <i>Lift</i> is the actual share divided by the expected share. The adjusted lead is Production Lift ÷ Consumption Lift (4.43 ÷ 3.81 = 1.16x).</p>
+<pre>SUMX ( ByField, [@Papers] * [@Rate] )
+  / SUMX ( ByField, [@Papers] )</pre>
+</div>
+</div>
+<p><b>Narrative measures</b> build the sentences on the Executive Summary from live values with <code>FORMAT</code>, so the key messages change with the slicers.</p>
+
+<h2><span class="n">5</span>Report pages</h2>
+<p>There are six pages in the navigation bar, plus a hidden Detail page reached by drillthrough. Every page has the same layout: a title, a subtitle that states the page's question, the navigation buttons, a row of slicers, a source note and the same theme. Blue always means consumption and orange always means production.</p>
+
+<div class="pages">
+  <div class="page">
+    <img src="screenshots/01_executive_summary.png" alt="Executive Summary page">
+    <h3>Executive Summary <small>Summary</small></h3>
+    <p>The headline KPIs, a map, papers per year, the SDG 12 comparison, and four numbered key messages built from narrative measures. It can be read in under a minute.</p>
+    <div class="sl">Slicer: Year</div>
+  </div>
+  <div class="page">
+    <img src="screenshots/02_growth_and_disciplines.png" alt="Growth and disciplines page">
+    <h3>Growth and disciplines <small>Analysis</small></h3>
+    <p>Papers vs the previous year, the top 12 fields (you can drill down to subfield), consumption and production by field, a field × year matrix, citation bands, and the lift by citation band.</p>
+    <div class="sl">Slicers: Domain, Year</div>
+  </div>
+  <div class="page">
+    <img src="screenshots/03_consumption_vs_production.png" alt="Consumption vs production page, share view">
+    <h3>Consumption vs production <small>Analysis</small></h3>
+    <p>The core evidence: the Focus split for SDG 12 vs untagged papers and by year, both shares over time, lift cards, actual vs expected shares, and the adjusted lead by field.</p>
+    <div class="sl">Slicers: Field, Year · Bookmark buttons: Share view / Count view</div>
+  </div>
+  <div class="page">
+    <img src="screenshots/03b_consumption_vs_production_count_view.png" alt="Consumption vs production page, count view">
+    <h3>… with Count view on <small>Bookmark</small></h3>
+    <p>The same page after clicking <i>Count view</i>. The two 100% charts become paper counts, which shows that only 365 papers are untagged.</p>
+    <div class="sl">Bookmarks: Share view, Count view</div>
+  </div>
+  <div class="page">
+    <img src="screenshots/04_who_does_the_research.png" alt="Who does the research page">
+    <h3>Who does the research <small>Analysis</small></h3>
+    <p>The top 15 institutions, the top 10 regions, papers by institution type, and a table of each institution's consumption %, production %, lead and citations per paper.</p>
+    <div class="sl">Slicers: Institution type, Year · Drillthrough source</div>
+  </div>
+  <div class="page">
+    <img src="screenshots/05_where_it_happens.png" alt="Where it happens page">
+    <h3>Where it happens <small>Analysis</small></h3>
+    <p>A bubble map (a scatter chart over a static map image, since Azure Maps asks viewers to sign in), citations vs adjusted lead for the 40 largest institutions, and the two shares by region.</p>
+    <div class="sl">Slicers: Institution type, Year</div>
+  </div>
+  <div class="page">
+    <img src="screenshots/06_explore_the_data.png" alt="Explore the data page">
+    <h3>Explore the data <small>Analysis</small></h3>
+    <p>A decomposition tree (Focus, open access, field, SDG 12, institution type, region) where you choose the order of the breakdown, and a ribbon chart of how the six largest fields change rank.</p>
+    <div class="sl">Slicer: Year</div>
+  </div>
+  <div class="page">
+    <img src="screenshots/07_detail.png" alt="Paper detail page">
+    <h3>Paper detail <small>Detail</small></h3>
+    <p>The most detailed level: one row per paper with date, journal, field, focus, SDG 12, open access, citations and a clickable DOI. A Back button returns to the page you came from.</p>
+    <div class="sl">Drillthrough target · no slicers</div>
+  </div>
+</div>
+
+<div class="find">
+<h3>Where to find filters, bookmarks and drillthrough</h3>
+<div class="tablewrap"><table>
+  <tbody>
+    <tr><td>Navigation</td><td>A button bar at the top of every page. Detail is hidden and opened only by drillthrough.</td></tr>
+    <tr><td>Visible filters</td><td>Year range slicer on every page, plus Domain (Growth), Field (Consumption vs production) and Institution type (Who, Where).</td></tr>
+    <tr><td>Hidden, report level</td><td><code>FactPapers[DocumentType]</code> is <i>article, review</i> or <i>book-chapter</i>. This removes editorials, errata and other paratext. The filter is locked and hidden in the filter pane.</td></tr>
+    <tr><td>Hidden, page level</td><td><i>Who does the research</i> and <i>Where it happens</i>: <code>DimInstitution[Institution]</code> is not blank.</td></tr>
+    <tr><td>Hidden, visual level</td><td>Top N filters: top 15 institutions and top 10 regions (Who); top 12 fields, two charts (Growth); top 10 fields, lead chart (Consumption vs production); 40 largest institutions in the scatter and top 10 regions (Where); 6 largest fields, ribbon chart (Explore). The type and region charts also exclude <i>Other</i> and blank values.</td></tr>
+    <tr><td>Bookmarks</td><td><i>Consumption vs production</i>, buttons at the top: <b>Share view</b> and <b>Count view</b>. Each bookmark applies only to its target visuals and doesn't store data, so the slicer selections stay. Clicking swaps the two 100% stacked charts for count versions and highlights the active button.</td></tr>
+    <tr><td>Drillthrough</td><td>The <b>Detail</b> page has two drillthrough fields: <code>DimInstitution[Institution]</code> and <code>DimDiscipline[Field]</code>. Right-click an institution (<i>Who does the research</i>: bar chart or table) or a field (<i>Growth and disciplines</i>, <i>Consumption vs production</i>) and choose <b>Drill through › Detail</b>. The page subtitle says this.</td></tr>
+  </tbody>
+</table></div>
+</div>
+
+<h2><span class="n">6</span>Conclusions</h2>
+<h3>What the data shows</h3>
+<ul>
+  <li><b>A fast-growing field:</b> 103 papers in 2015 and 800 in 2024. In 2024 output was up 19.2% on the previous year. Environmental Science and Engineering lead.</li>
+  <li><b>Production dominates:</b> <span class="prod">51.1%</span> of papers mention production and <span class="cons">24.5%</span> mention consumption, a 2.09x lead. Part of this is the words themselves, because production is 1.8x more common across all Spanish research. After adjusting for each field, the lead falls to <b>1.16x</b>. It is smaller, but it remains in 9 of the 10 largest fields. Materials Science is the exception.</li>
+  <li><b>SDG 12 does not rebalance the field:</b> tagged CE papers have a <i>larger</i> lead (2.12x) than untagged ones (1.60x), and across all Spanish SDG 12 papers the lead is 2.5x. 38% of tagged CE papers mention neither side.</li>
+  <li><b>Both shares are falling, consumption faster:</b> consumption fell from 35.0% to 21.4% between 2015 and 2024, and production from 60.2% to 51.1%. Production also leads in all 10 largest regions. Institutions with more citations per paper don't show a larger lead (Spearman ≈ 0.14).</li>
+  <li><b>Caveats:</b> this is an association, not a cause. Mentions come from a word search, so <i>energy production</i> also counts as production. Only 365 CE papers are untagged.</li>
+</ul>
+<div class="cols">
+<div>
+<h3>Difficulties</h3>
+<ul>
+  <li>API limits: the shared daily budget ran out partway through a refresh, so I needed a key. It is stored as a credential and not as a parameter, which keeps it out of the file.</li>
+  <li>Several institutions per paper: I needed a bridge table and a two-way filter without double counting.</li>
+  <li>The region was missing for half of the institutions. I filled it from coordinates and validated the method before trusting it.</li>
+  <li>Azure Maps needs a sign-in, so I built the map as a scatter chart over an image.</li>
+</ul>
+</div>
+<div>
+<h3>What I learned</h3>
+<ul>
+  <li>Calling a paged API from Power Query with a custom function, and reshaping nested JSON.</li>
+  <li>Modelling many-to-many relationships, and when a two-way filter is safe.</li>
+  <li>How filter context works in <code>CALCULATE</code>, time intelligence on a marked calendar, and using unrelated tables through <code>LOOKUPVALUE</code>.</li>
+  <li>That a fair comparison needs a baseline. The raw 2x gap shrank to 1.16x once word frequency was accounted for.</li>
+</ul>
+</div>
+</div>
+
+<div class="foot">Data: OpenAlex (CC0), queried November 2026. Regional boundaries: Natural Earth (public domain). Source files and refresh instructions: the project's GitHub repository.</div>
+
+</main>

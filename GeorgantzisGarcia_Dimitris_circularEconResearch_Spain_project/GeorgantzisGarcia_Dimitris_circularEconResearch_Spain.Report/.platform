@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "GeorgantzisGarcia_Dimitris_circularEconResearch_Spain"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "947fc3e5-2348-4d44-a84c-85976e3f8288"
+  }
+}

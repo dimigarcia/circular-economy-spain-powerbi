@@ -1,0 +1,287 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "78647dda498136f72198",
+  "position": {
+    "x": 40,
+    "y": 270,
+    "z": 6000,
+    "height": 790,
+    "width": 1840,
+    "tabOrder": 6000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactPapers"
+                    }
+                  },
+                  "Property": "Title"
+                }
+              },
+              "queryRef": "FactPapers.Title",
+              "nativeQueryRef": "Title"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactPapers"
+                    }
+                  },
+                  "Property": "PublicationDate"
+                }
+              },
+              "queryRef": "FactPapers.PublicationDate",
+              "nativeQueryRef": "PublicationDate"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimSource"
+                    }
+                  },
+                  "Property": "SourceName"
+                }
+              },
+              "queryRef": "DimSource.SourceName",
+              "nativeQueryRef": "SourceName"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimDiscipline"
+                    }
+                  },
+                  "Property": "Field"
+                }
+              },
+              "queryRef": "DimDiscipline.Field",
+              "nativeQueryRef": "Field"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactPapers"
+                    }
+                  },
+                  "Property": "Focus"
+                }
+              },
+              "queryRef": "FactPapers.Focus",
+              "nativeQueryRef": "Focus"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactPapers"
+                    }
+                  },
+                  "Property": "SDG 12 Group"
+                }
+              },
+              "queryRef": "FactPapers.SDG 12 Group",
+              "nativeQueryRef": "SDG 12 Group"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactPapers"
+                    }
+                  },
+                  "Property": "OAStatus"
+                }
+              },
+              "queryRef": "FactPapers.OAStatus",
+              "nativeQueryRef": "OAStatus"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactPapers"
+                    }
+                  },
+                  "Property": "Citations"
+                }
+              },
+              "queryRef": "FactPapers.Citations",
+              "nativeQueryRef": "Citations"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactPapers"
+                    }
+                  },
+                  "Property": "DOI Link"
+                }
+              },
+              "queryRef": "FactPapers.DOI Link",
+              "nativeQueryRef": "DOI Link"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "FactPapers"
+                  }
+                },
+                "Property": "Citations"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "values": [
+        {
+          "properties": {
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnHeaders": [
+        {
+          "properties": {
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "500.0D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "FactPapers.Title"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "260.0D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "DimSource.SourceName"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "200.0D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "DimDiscipline.Field"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "220.0D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "FactPapers.DOI Link"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Papers'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,247 @@
+table FactPapers
+	lineageTag: 01fefd40-7cad-487d-9fb3-d312e10ae1cc
+
+	column PaperID
+		dataType: string
+		isHidden
+		lineageTag: d03acb28-5ebd-4aee-a9e8-b11cca0260d4
+		summarizeBy: none
+		sourceColumn: PaperID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Title
+		dataType: string
+		lineageTag: 39398fca-c148-4faf-a0db-fba72d41bf70
+		summarizeBy: none
+		sourceColumn: Title
+
+		annotation SummarizationSetBy = Automatic
+
+	column PublicationDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: cc545398-a832-49c7-bec5-93ec2f07e2e9
+		summarizeBy: none
+		sourceColumn: PublicationDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column DocumentType
+		dataType: string
+		lineageTag: 98f56cb2-940b-448d-b4f1-62d6fa03740c
+		summarizeBy: none
+		sourceColumn: DocumentType
+
+		annotation SummarizationSetBy = Automatic
+
+	column Citations
+		dataType: int64
+		formatString: 0
+		lineageTag: fe91c54c-d672-43e6-bc03-98de7aa0fe5a
+		summarizeBy: sum
+		sourceColumn: Citations
+
+		annotation SummarizationSetBy = Automatic
+
+	column TopicID
+		dataType: string
+		isHidden
+		lineageTag: 24a1dd1d-32cb-4524-8b8f-7c1690dc1d96
+		summarizeBy: none
+		sourceColumn: TopicID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column SourceID
+		dataType: string
+		isHidden
+		lineageTag: f0a8b857-df66-4c0e-a46c-347b22b1ba29
+		summarizeBy: none
+		sourceColumn: SourceID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column OAStatus
+		dataType: string
+		lineageTag: 309aa275-c423-4f19-a5dc-f8094af94a31
+		summarizeBy: none
+		sourceColumn: OAStatus
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsOpenAccess
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: f7e35a69-4708-4f06-902e-ae64257fafc5
+		summarizeBy: none
+		sourceColumn: IsOpenAccess
+
+		annotation SummarizationSetBy = Automatic
+
+	column TaggedSDG12
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: aeea9d86-89b2-48f0-9d7d-da5c2989dcbc
+		summarizeBy: none
+		sourceColumn: TaggedSDG12
+
+		annotation SummarizationSetBy = Automatic
+
+	column DOI
+		dataType: string
+		isHidden
+		lineageTag: 0f6e5f48-c318-457a-af42-ce3686f076b2
+		summarizeBy: none
+		sourceColumn: DOI
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column MentionsConsumption
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 83f2d993-c34f-4f8a-9dfb-9ec36a56b05b
+		summarizeBy: none
+		sourceColumn: MentionsConsumption
+
+		annotation SummarizationSetBy = Automatic
+
+	column MentionsProduction
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: a08423de-e2f9-44ae-9ee8-fd0229fc1dc9
+		summarizeBy: none
+		sourceColumn: MentionsProduction
+
+		annotation SummarizationSetBy = Automatic
+
+	column Focus
+		dataType: string
+		lineageTag: cabb7428-9f99-4e24-a1f6-029aa0aa6861
+		summarizeBy: none
+		sourceColumn: Focus
+		sortByColumn: 'Focus Order'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SDG 12 Group' = IF ( FactPapers[TaggedSDG12], "SDG 12 tagged", "Not SDG 12" )
+		lineageTag: 43b6f639-8ecc-4927-8e13-6dee3e95bfa2
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Citation Band' =
+			
+			SWITCH (
+			    TRUE (),
+			    FactPapers[Citations] = 0, "0",
+			    FactPapers[Citations] <= 10, "1-10",
+			    FactPapers[Citations] <= 50, "11-50",
+			    FactPapers[Citations] <= 200, "51-200",
+			    "200+"
+			)
+		lineageTag: 6a3fc990-ed46-4a18-b308-5c839d19de95
+		summarizeBy: none
+		sortByColumn: 'Citation Band Order'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Citation Band Order' =
+			
+			SWITCH (
+			    TRUE (),
+			    FactPapers[Citations] = 0, 1,
+			    FactPapers[Citations] <= 10, 2,
+			    FactPapers[Citations] <= 50, 3,
+			    FactPapers[Citations] <= 200, 4,
+			    5
+			)
+		isHidden
+		formatString: 0
+		lineageTag: c48d6c31-f45f-4ea4-ba59-bbaa1d6de294
+		summarizeBy: sum
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'DOI Link' = FactPapers[DOI]
+		lineageTag: 69cb1952-e798-4f94-b97b-d288fce2d28b
+		dataCategory: WebUrl
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Focus Order'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 0ca5124a-b78e-46c3-9eea-b6cd172b2199
+		summarizeBy: sum
+		sourceColumn: Focus Order
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactPapers = m
+		mode: import
+		source =
+				let
+				    Source = WorksRaw,
+				    AddColumns = Table.AddColumn(Source, "Fields", each [
+				        PublicationDate = try Date.FromText([publication_date], [Format = "yyyy-MM-dd"]) otherwise null,
+				        TopicID = try Text.AfterDelimiter([primary_topic][id], "/", {0, RelativePosition.FromEnd}) otherwise "none",
+				        SourceID = try Text.AfterDelimiter([primary_location][source][id], "/", {0, RelativePosition.FromEnd}) otherwise "none",
+				        OAStatus = try [open_access][oa_status] otherwise "unknown",
+				        IsOpenAccess = try [open_access][is_oa] = true otherwise false,
+				        TaggedSDG12 = try List.AnyTrue(List.Transform([sustainable_development_goals], each _[id] = "https://metadata.un.org/sdg/12")) otherwise false,
+				        DOI = [doi]
+				    ]),
+				    Expand = Table.ExpandRecordColumn(AddColumns, "Fields",
+				        {"PublicationDate", "TopicID", "SourceID", "OAStatus", "IsOpenAccess", "TaggedSDG12", "DOI"}),
+				    Keep = Table.SelectColumns(Expand,
+				        {"id", "title", "PublicationDate", "type", "cited_by_count", "TopicID", "SourceID", "OAStatus", "IsOpenAccess", "TaggedSDG12", "DOI"}),
+				    Rename = Table.RenameColumns(Keep, {{"id", "PaperID"}, {"title", "Title"}, {"type", "DocumentType"}, {"cited_by_count", "Citations"}}),
+				    // Replace null ids with "none" so every paper joins a dimension row
+				    FillIds = Table.ReplaceValue(Rename, null, "none", Replacer.ReplaceValue, {"TopicID", "SourceID"}),
+				    // Merge queries: flag papers found by the consumption and production queries
+				    MergeConsumption = Table.NestedJoin(FillIds, {"PaperID"}, ConsumptionIds, {"id"}, "C", JoinKind.LeftOuter),
+				    ExpandConsumption = Table.ExpandTableColumn(MergeConsumption, "C", {"MentionsConsumption"}),
+				    MergeProduction = Table.NestedJoin(ExpandConsumption, {"PaperID"}, ProductionIds, {"id"}, "P", JoinKind.LeftOuter),
+				    ExpandProduction = Table.ExpandTableColumn(MergeProduction, "P", {"MentionsProduction"}),
+				    FillFlags = Table.ReplaceValue(ExpandProduction, null, false, Replacer.ReplaceValue, {"MentionsConsumption", "MentionsProduction"}),
+				    AddFocus = Table.AddColumn(FillFlags, "Focus", each
+				        if [MentionsConsumption] and [MentionsProduction] then "Both"
+				        else if [MentionsConsumption] then "Consumption only"
+				        else if [MentionsProduction] then "Production only"
+				        else "Neither", type text),
+				    RemoveNoDate = Table.SelectRows(AddFocus, each [PublicationDate] <> null),
+				    Types = Table.TransformColumnTypes(RemoveNoDate, {
+				        {"PaperID", type text}, {"Title", type text}, {"PublicationDate", type date}, {"DocumentType", type text},
+				        {"Citations", Int64.Type}, {"TopicID", type text}, {"SourceID", type text}, {"OAStatus", type text},
+				        {"IsOpenAccess", type logical}, {"TaggedSDG12", type logical}, {"DOI", type text},
+				        {"MentionsConsumption", type logical}, {"MentionsProduction", type logical}}),
+				    #"Added Custom" = Table.AddColumn(Types, "Focus Order", each if [Focus] = "Consumption only" then 1 else if [Focus] = "Both" then 2 else if [Focus] = "Production only" then 3 else 4),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Added Custom",{{"Focus Order", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

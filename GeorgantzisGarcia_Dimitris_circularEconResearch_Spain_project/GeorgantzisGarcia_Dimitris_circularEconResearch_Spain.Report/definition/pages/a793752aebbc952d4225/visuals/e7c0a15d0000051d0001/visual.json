@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "e7c0a15d0000051d0001",
+  "position": {
+    "x": 500,
+    "y": 126,
+    "z": 9000,
+    "width": 1380,
+    "height": 52,
+    "tabOrder": 9000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Source: OpenAlex, 2015–2024: articles, reviews and book chapters. CE = circular economy. Population counts are a 2 Nov 2026 snapshot and ignore the Year filter. Only 365 CE papers are untagged, so read that group loosely.",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#56635E",
+                      "fontFamily": "Segoe UI Variable Text, Segoe UI, sans-serif"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "right"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

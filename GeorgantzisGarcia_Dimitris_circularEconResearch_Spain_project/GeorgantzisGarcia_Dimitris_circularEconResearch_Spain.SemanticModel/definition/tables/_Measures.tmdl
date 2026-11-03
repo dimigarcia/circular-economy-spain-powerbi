@@ -1,0 +1,261 @@
+table _Measures
+	lineageTag: 5a4cd911-7b10-4d1f-a0b4-5d6ee8de5608
+
+	measure Papers = COUNTROWS ( FactPapers )
+		formatString: #,0
+		displayFolder: Volume
+		lineageTag: 65bed779-362f-4712-8337-51e7aca67ff1
+
+	measure Citations = SUM ( FactPapers[Citations] )
+		formatString: #,0
+		displayFolder: Volume
+		lineageTag: 6d6f17e8-03b2-4789-a8fd-0ab4af9e9c9b
+
+	measure 'Citations per Paper' = DIVIDE ( [Citations], [Papers] )
+		formatString: 0.0
+		displayFolder: Volume
+		lineageTag: 7bcba24b-7e33-4e9e-9f8b-cf950a1c6b21
+
+	measure Institutions = DISTINCTCOUNT ( BridgePaperInstitution[InstitutionID] )
+		formatString: #,0
+		displayFolder: Volume
+		lineageTag: a91ec09d-4717-4688-8494-4ca20711bcb4
+
+	measure 'Open Access %' =
+			
+			DIVIDE ( CALCULATE ( [Papers], FactPapers[IsOpenAccess] = TRUE () ), [Papers] )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Volume
+		lineageTag: e31092f8-1f3e-4903-b0c4-2ffa4eecbe18
+
+	measure 'Consumption Papers' =
+			
+			CALCULATE ( [Papers], FactPapers[MentionsConsumption] = TRUE () )
+		formatString: #,0
+		displayFolder: Consumption vs production
+		lineageTag: d65cbc13-4380-444b-8a72-78e5b3b3c980
+
+	measure 'Consumption %' = DIVIDE ( [Consumption Papers], [Papers] )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Consumption vs production
+		lineageTag: 233b74be-c0a1-491f-9e37-6028312bb44e
+
+	measure 'Production Papers' =
+			
+			CALCULATE ( [Papers], FactPapers[MentionsProduction] = TRUE () )
+		formatString: #,0
+		displayFolder: Consumption vs production
+		lineageTag: 350cb9eb-b6f5-4438-91e3-8d78e3fad5bb
+
+	measure 'Production %' = DIVIDE ( [Production Papers], [Papers] )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Consumption vs production
+		lineageTag: 19ee54ca-48e7-4738-a91b-8338786e4d01
+
+	measure 'SDG 12 Papers' =
+			
+			CALCULATE ( [Papers], FactPapers[TaggedSDG12] = TRUE () )
+		formatString: #,0
+		displayFolder: Consumption vs production
+		lineageTag: b75c29cc-876e-43d8-ae0d-f80021522eaf
+
+	measure 'SDG 12 %' = DIVIDE ( [SDG 12 Papers], [Papers] )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Consumption vs production
+		lineageTag: cc81b54b-74b0-4dcc-b331-238c6bb6826c
+
+	measure 'Focus Share %' =
+			
+			DIVIDE ( [Papers], CALCULATE ( [Papers], REMOVEFILTERS ( FactPapers[Focus], FactPapers[Focus Order] ) ) )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Consumption vs production
+		lineageTag: 70d67d68-886e-43ec-acc0-84f5ac78d1c2
+
+	measure 'Papers PY' = CALCULATE ( [Papers], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+		formatString: #,0
+		displayFolder: Time intelligence
+		lineageTag: 124d66c5-0b88-4944-8700-231603a56c16
+
+	measure 'Papers YoY %' =
+			
+			VAR PapersPrevYear = [Papers PY]
+			RETURN
+			    IF ( NOT ISBLANK ( PapersPrevYear ), DIVIDE ( [Papers] - PapersPrevYear, PapersPrevYear ) )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Time intelligence
+		lineageTag: 7b2ca318-badb-498d-b426-8fb8b3ed67d4
+
+	measure 'Papers Cumulative' =
+			
+			VAR MaxVisibleDate = MAX ( DimDate[Date] )
+			RETURN
+			    CALCULATE ( [Papers], REMOVEFILTERS ( DimDate ), DimDate[Date] <= MaxVisibleDate )
+		formatString: #,0
+		displayFolder: Time intelligence
+		lineageTag: 04240b82-176e-407e-92fe-66fdd18498a6
+
+	measure 'Consumption % PY' =
+			
+			CALCULATE ( [Consumption %], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+		displayFolder: Time intelligence
+		lineageTag: e5ed72e0-0d30-4381-8973-0c0bcb75afb9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Consumption % YoY (pp)' =
+			
+			VAR PreviousShare = [Consumption % PY]
+			RETURN
+			    IF ( NOT ISBLANK ( PreviousShare ), [Consumption %] - PreviousShare )
+		formatString: 0.000
+		displayFolder: Time intelligence
+		lineageTag: 834e989d-3f85-4d79-b74a-608541ad2520
+
+	measure 'Expected Consumption %' =
+			
+			VAR ByField =
+			    ADDCOLUMNS (
+			        VALUES ( DimDiscipline[Field] ),
+			        "@Papers", [Papers],
+			        "@Rate", LOOKUPVALUE ( BaselineByField[BaselineConsumptionRate], BaselineByField[Field], DimDiscipline[Field] )
+			    )
+			RETURN
+			    DIVIDE ( SUMX ( ByField, [@Papers] * [@Rate] ), SUMX ( ByField, IF ( NOT ISBLANK ( [@Rate] ), [@Papers] ) ) )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Baseline comparison
+		lineageTag: 4b074e9f-0c3f-4247-b460-6be5c3d44b2c
+
+	measure 'Expected Production %' =
+			
+			VAR ByField =
+			    ADDCOLUMNS (
+			        VALUES ( DimDiscipline[Field] ),
+			        "@Papers", [Papers],
+			        "@Rate", LOOKUPVALUE ( BaselineByField[BaselineProductionRate], BaselineByField[Field], DimDiscipline[Field] )
+			    )
+			RETURN
+			    DIVIDE ( SUMX ( ByField, [@Papers] * [@Rate] ), SUMX ( ByField, IF ( NOT ISBLANK ( [@Rate] ), [@Papers] ) ) )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Baseline comparison
+		lineageTag: 20e03093-f04f-4b02-833a-d67300fef8d5
+
+	measure 'Consumption Lift' = DIVIDE ( [Consumption %], [Expected Consumption %] )
+		formatString: 0.00
+		displayFolder: Baseline comparison
+		lineageTag: d73b4080-b64c-4219-afbc-a116acb17cf9
+
+	measure 'Production Lift' = DIVIDE ( [Production %], [Expected Production %] )
+		formatString: 0.00
+		displayFolder: Baseline comparison
+		lineageTag: 59f0038a-3bf5-4307-b705-ddd9f72a0f9d
+
+	measure 'Msg Growth' =
+			VAR FirstYear = MINX ( VALUES ( DimDate[Year] ), DimDate[Year] )
+			VAR LastYear = MAXX ( VALUES ( DimDate[Year] ), DimDate[Year] )
+			VAR FirstPapers = CALCULATE ( [Papers], DimDate[Year] = FirstYear )
+			VAR LastPapers = CALCULATE ( [Papers], DimDate[Year] = LastYear )
+			RETURN
+			    "Output went from " & FORMAT ( FirstPapers, "#,0" ) & " papers in " & FirstYear
+			        & " to " & FORMAT ( LastPapers, "#,0" ) & " in " & LastYear
+			        & " (" & FORMAT ( DIVIDE ( LastPapers - FirstPapers, FirstPapers ), "+0%;-0%" ) & ")."
+		displayFolder: Narrative
+		lineageTag: 533c65f0-1a76-4496-85fa-d5e22c8b401e
+
+	measure 'Msg Focus' =
+			FORMAT ( [Consumption %], "0%" ) & " of papers mention consumption and "
+			    & FORMAT ( [Production %], "0%" ) & " mention production; "
+			    & FORMAT ( CALCULATE ( [Papers], FactPapers[Focus] = "Neither" ) / [Papers], "0%" ) & " mention neither."
+		displayFolder: Narrative
+		lineageTag: bf8a4005-5383-4139-a8ce-56f9a1a0128e
+
+	measure 'Msg SDG12' =
+			VAR ConsSDG = CALCULATE ( [Consumption %], FactPapers[TaggedSDG12] = TRUE () )
+			VAR ProdSDG = CALCULATE ( [Production %], FactPapers[TaggedSDG12] = TRUE () )
+			RETURN
+			    "Within SDG 12 papers, " & FORMAT ( ConsSDG, "0%" ) & " mention consumption and "
+			        & FORMAT ( ProdSDG, "0%" ) & " production. Against the baseline, consumption words appear "
+			        & FORMAT ( CALCULATE ( [Consumption Lift], FactPapers[TaggedSDG12] = TRUE () ), "0.0" ) & "x as often as expected, production words "
+			        & FORMAT ( CALCULATE ( [Production Lift], FactPapers[TaggedSDG12] = TRUE () ), "0.0" ) & "x."
+		displayFolder: Narrative
+		lineageTag: 95884a70-46d7-4e95-8d70-4fda5e8584c0
+
+	measure 'Papers YoY % Latest Year' =
+			VAR LatestYear = MAXX ( VALUES ( DimDate[Year] ), DimDate[Year] )
+			RETURN
+			    CALCULATE ( [Papers YoY %], DimDate[Year] = LatestYear )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Time intelligence
+		lineageTag: 7c87ecc2-3637-4977-85cb-633d33ae431e
+
+	measure 'Latest Year Label' = "Growth in " & MAXX ( VALUES ( DimDate[Year] ), DimDate[Year] ) & " vs previous year"
+		displayFolder: Narrative
+		lineageTag: f8525ac9-5b64-46c5-8f51-c2da90234c3d
+
+	measure 'Consumption pp Change Latest Year' =
+			VAR LatestYear = MAXX ( VALUES ( DimDate[Year] ), DimDate[Year] )
+			RETURN
+			    CALCULATE ( [Consumption % YoY (pp)], DimDate[Year] = LatestYear ) * 100
+		formatString: +0.0" pp";-0.0" pp";0.0" pp"
+		displayFolder: Time intelligence
+		lineageTag: 308e607b-9715-4b1c-8093-aba6febbb4a0
+
+	measure 'Story Consumption %' =
+			VAR G = SELECTEDVALUE ( StoryGroups[Group] )
+			RETURN
+			    SWITCH (
+			        G,
+			        "CE, SDG 12 tagged", CALCULATE ( [Consumption %], FactPapers[TaggedSDG12] = TRUE () ),
+			        "CE, not tagged", CALCULATE ( [Consumption %], FactPapers[TaggedSDG12] = FALSE () ),
+			        DIVIDE ( SELECTEDVALUE ( StoryGroups[Consumption] ), SELECTEDVALUE ( StoryGroups[Papers] ) )
+			    )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Story
+		lineageTag: c4f580af-2cb5-486c-b184-93da73bdb8e7
+
+	measure 'Story Production %' =
+			VAR G = SELECTEDVALUE ( StoryGroups[Group] )
+			RETURN
+			    SWITCH (
+			        G,
+			        "CE, SDG 12 tagged", CALCULATE ( [Production %], FactPapers[TaggedSDG12] = TRUE () ),
+			        "CE, not tagged", CALCULATE ( [Production %], FactPapers[TaggedSDG12] = FALSE () ),
+			        DIVIDE ( SELECTEDVALUE ( StoryGroups[Production] ), SELECTEDVALUE ( StoryGroups[Papers] ) )
+			    )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: Story
+		lineageTag: 170a7fdd-37e4-4a7a-8f7f-e74c5eab4ec0
+
+	measure 'Production Lead' = DIVIDE ( [Production %], [Consumption %] )
+		formatString: 0.00"x"
+		displayFolder: Story
+		lineageTag: 1de1a88f-864d-4bba-9b8c-56a5b745f9e7
+
+	measure 'Production Lead Adjusted' = DIVIDE ( [Production Lift], [Consumption Lift] )
+		formatString: 0.00"x"
+		displayFolder: Story
+		lineageTag: d7672fb0-7223-4454-b105-f15f46968eeb
+
+	measure 'Msg Gap' = "Spanish circular economy research looks far more at production: " & FORMAT ( [Production %], "0.0%" ) & " of papers mention it, against " & FORMAT ( [Consumption %], "0.0%" ) & " for consumption."
+		displayFolder: Narrative
+		lineageTag: 0a87c4d6-5add-4f58-9663-fdb90c2dbe9d
+
+	measure 'Msg Word' = "Production is also the more common word across Spanish research (" & FORMAT ( DIVIDE ( [Expected Production %], [Expected Consumption %] ), "0.0" ) & "x). Adjusting for that, the lead shrinks from " & FORMAT ( [Production Lead], "0.0" ) & "x to " & FORMAT ( [Production Lead Adjusted], "0.0" ) & "x: smaller, but still there."
+		displayFolder: Narrative
+		lineageTag: 47e884f9-198d-4e54-aab7-f07af52481aa
+
+	measure 'Msg Label' = "SDG 12 names both sides, yet production leads " & FORMAT ( CALCULATE ( [Production Lead], FactPapers[TaggedSDG12] = TRUE (), REMOVEFILTERS ( DimDate ) ), "0.0" ) & "x among tagged circular economy papers and " & FORMAT ( CALCULATE ( DIVIDE ( SUM ( StoryGroups[Production] ), SUM ( StoryGroups[Consumption] ) ), StoryGroups[Group] = "All SDG 12 papers" ), "0.0" ) & "x across all Spanish SDG 12 papers, against " & FORMAT ( CALCULATE ( DIVIDE ( SUM ( StoryGroups[Production] ), SUM ( StoryGroups[Consumption] ) ), StoryGroups[Group] = "All Spanish research" ), "0.0" ) & "x in Spanish research overall. The label does not rebalance the field."
+		displayFolder: Narrative
+		lineageTag: e220364c-53ca-4eeb-ba3c-b2bd88882f69
+
+	partition _Measures = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+

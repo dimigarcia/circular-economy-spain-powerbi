@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "GeorgantzisGarcia_Dimitris_circularEconResearch_Spain"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "a503d3d2-60a1-468b-9b85-bddb0064cc69"
+  }
+}

@@ -1,0 +1,52 @@
+table BridgePaperInstitution
+	isHidden
+	lineageTag: a09eb41c-d61b-470d-929b-8fc4e152b7b0
+
+	column PaperID
+		dataType: string
+		isHidden
+		lineageTag: 616fe669-6a7a-4afd-89ce-ef33a7bb3a15
+		summarizeBy: none
+		sourceColumn: PaperID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column InstitutionID
+		dataType: string
+		isHidden
+		lineageTag: e7407e49-3829-4288-97a0-98b11cbb1754
+		summarizeBy: none
+		sourceColumn: InstitutionID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition BridgePaperInstitution = m
+		mode: import
+		source =
+				let
+				    Source = Table.SelectColumns(WorksRaw, {"id", "authorships"}),
+				    ExpandAuthorships = Table.ExpandListColumn(Source, "authorships"),
+				    Institutions = Table.AddColumn(ExpandAuthorships, "institutions", each try [authorships][institutions] otherwise {}),
+				    ExpandInstitutions = Table.ExpandListColumn(Table.SelectColumns(Institutions, {"id", "institutions"}), "institutions"),
+				    Fields = Table.AddColumn(ExpandInstitutions, "R", each [
+				        InstitutionID = try Text.AfterDelimiter([institutions][id], "/", {0, RelativePosition.FromEnd}) otherwise null,
+				        Country = try [institutions][country_code] otherwise null
+				    ]),
+				    Expand = Table.ExpandRecordColumn(Fields, "R", {"InstitutionID", "Country"}),
+				    SpainOnly = Table.SelectRows(Expand, each [Country] = "ES" and [InstitutionID] <> null),
+				    Keep = Table.RenameColumns(Table.SelectColumns(SpainOnly, {"id", "InstitutionID"}), {{"id", "PaperID"}}),
+				    Distinct = Table.Distinct(Keep),
+				    Types = Table.TransformColumnTypes(Distinct, {{"PaperID", type text}, {"InstitutionID", type text}})
+				in
+				    Types
+
+	changedProperty = IsHidden
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Exception
+

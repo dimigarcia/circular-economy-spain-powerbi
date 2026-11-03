@@ -1,0 +1,68 @@
+/// Comparison groups for the Summary page. Whole-population rows are an OpenAlex count snapshot taken 2026-11-02 (Spanish institutions, 2015-2024, article/review/book-chapter), using the same consumption and production search terms as the report. Circular economy rows are calculated live from FactPapers.
+table StoryGroups
+	lineageTag: e76b19ec-b066-43c3-bfa7-44caba583a38
+
+	column Group
+		dataType: string
+		lineageTag: 68c8fc7a-4a3b-4723-bf39-acd7b127dc15
+		summarizeBy: none
+		sourceColumn: [Group]
+		sortByColumn: Order
+
+		annotation SummarizationSetBy = Automatic
+
+	column Order
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 47d22251-73ed-40c9-96f8-54b8568bfad5
+		summarizeBy: none
+		sourceColumn: [Order]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Papers
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: e1edef63-9f6b-4a13-acb5-5ebb5ec819c4
+		summarizeBy: none
+		sourceColumn: [Papers]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Consumption
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: a6e67c82-a5f7-41e2-9d94-8a6d62fb7f4a
+		summarizeBy: none
+		sourceColumn: [Consumption]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Production
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 90088781-7d62-4741-b4aa-ed1980257966
+		summarizeBy: none
+		sourceColumn: [Production]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition StoryGroups = calculated
+		mode: import
+		source =
+				DATATABLE (
+				    "Group", STRING, "Order", INTEGER, "Papers", INTEGER, "Consumption", INTEGER, "Production", INTEGER,
+				    {
+				        { "All Spanish research", 1, 1217389, 40608, 72186 },
+				        { "CE, not tagged", 2, 0, 0, 0 },
+				        { "CE, SDG 12 tagged", 3, 0, 0, 0 },
+				        { "All SDG 12 papers", 4, 35041, 5102, 12775 }
+				    }
+				)
+
+	annotation PBI_Id = 51c0518340e74f329bd55bc0c2da8c54
+

@@ -1,0 +1,60 @@
+table DimSource
+	lineageTag: 99a760fe-b5f8-47ec-b5df-3ba959418add
+
+	column SourceID
+		dataType: string
+		isHidden
+		lineageTag: f071ad4a-fa60-48b8-98ba-3cb0e8b1858c
+		summarizeBy: none
+		sourceColumn: SourceID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column SourceName
+		dataType: string
+		lineageTag: ebb52382-e3ab-410d-8d6e-d365a7b1738f
+		summarizeBy: none
+		sourceColumn: SourceName
+
+		annotation SummarizationSetBy = Automatic
+
+	column SourceType
+		dataType: string
+		lineageTag: 99ad33b6-c74e-43b7-9d9b-e14eb638ae08
+		summarizeBy: none
+		sourceColumn: SourceType
+
+		annotation SummarizationSetBy = Automatic
+
+	column Publisher
+		dataType: string
+		lineageTag: c0b24cba-256c-468e-b6f1-c5ee5b3cae8b
+		summarizeBy: none
+		sourceColumn: Publisher
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimSource = m
+		mode: import
+		source =
+				let
+				    Source = WorksRaw,
+				    Rows = Table.AddColumn(Source, "R", each [
+				        SourceID = try Text.AfterDelimiter([primary_location][source][id], "/", {0, RelativePosition.FromEnd}) otherwise "none",
+				        SourceName = try [primary_location][source][display_name] otherwise "Unknown source",
+				        SourceType = try [primary_location][source][type] otherwise "unknown",
+				        Publisher = try [primary_location][source][host_organization_name] otherwise "Unknown"
+				    ]),
+				    Expand = Table.ExpandRecordColumn(Table.SelectColumns(Rows, {"R"}), "R", {"SourceID", "SourceName", "SourceType", "Publisher"}),
+				    FillNulls = Table.ReplaceValue(Expand, null, "Unknown", Replacer.ReplaceValue, {"SourceName", "SourceType", "Publisher"}),
+				    Distinct = Table.Distinct(FillNulls, {"SourceID"}),
+				    Types = Table.TransformColumnTypes(Distinct, {{"SourceID", type text}, {"SourceName", type text}, {"SourceType", type text}, {"Publisher", type text}})
+				in
+				    Types
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

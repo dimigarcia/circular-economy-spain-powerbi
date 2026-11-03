@@ -1,0 +1,21 @@
+relationship AutoDetected_77a281bb-902d-4680-bb14-dae7554e3776
+	crossFilteringBehavior: bothDirections
+	fromColumn: BridgePaperInstitution.PaperID
+	toColumn: FactPapers.PaperID
+
+relationship AutoDetected_a1e5700a-4bd6-49df-b388-4d3754a8884f
+	fromColumn: FactPapers.TopicID
+	toColumn: DimDiscipline.TopicID
+
+relationship AutoDetected_b4f72319-aa33-49a7-9b0f-cf9cd075705a
+	fromColumn: FactPapers.SourceID
+	toColumn: DimSource.SourceID
+
+relationship AutoDetected_835abe0d-b9ec-4563-9490-6930594acb12
+	fromColumn: BridgePaperInstitution.InstitutionID
+	toColumn: DimInstitution.InstitutionID
+
+relationship 623f4c50-6966-bcf5-7826-411e6c2a4361
+	fromColumn: FactPapers.PublicationDate
+	toColumn: DimDate.Date
+

@@ -1,0 +1,347 @@
+// =====================================================================
+// DAX: calendar table, calculated columns and measures
+// Generated from the .pbip project (SemanticModel/definition/tables/*.tmdl).
+// The project is the source of truth; regenerate this file rather than editing it.
+// =====================================================================
+
+// ---------------------------------------------------------------------
+// CALCULATED TABLE  DimDate  (Modeling > New table)
+// Then: sort Month by Month Number and Weekday by Weekday Number,
+// and Table tools > Mark as date table (Date column).
+// ---------------------------------------------------------------------
+DimDate =
+    ADDCOLUMNS (
+        CALENDAR (
+            DATE ( YEAR ( MIN ( FactPapers[PublicationDate] ) ), 1, 1 ),
+            DATE ( YEAR ( MAX ( FactPapers[PublicationDate] ) ), 12, 31 )
+        ),
+        "Year", YEAR ( [Date] ),
+        "Quarter", "Q" & QUARTER ( [Date] ),
+        "Month Number", MONTH ( [Date] ),
+        "Month", FORMAT ( [Date], "mmm", "en-US" ),
+        "Year Month", FORMAT ( [Date], "yyyy-mm" ),
+        "Weekday Number", WEEKDAY ( [Date], 2 ),
+        "Weekday", FORMAT ( [Date], "ddd", "en-US" )
+    )
+
+
+// ---------------------------------------------------------------------
+// CALCULATED TABLE  StoryGroups  (Modeling > New table)
+// ---------------------------------------------------------------------
+StoryGroups =
+    DATATABLE (
+        "Group", STRING, "Order", INTEGER, "Papers", INTEGER, "Consumption", INTEGER, "Production", INTEGER,
+        {
+            { "All Spanish research", 1, 1217389, 40608, 72186 },
+            { "CE, not tagged", 2, 0, 0, 0 },
+            { "CE, SDG 12 tagged", 3, 0, 0, 0 },
+            { "All SDG 12 papers", 4, 35041, 5102, 12775 }
+        }
+    )
+
+
+// ---------------------------------------------------------------------
+// CALCULATED COLUMNS on DimInstitution  (Table view > DimInstitution > New column)
+// ---------------------------------------------------------------------
+// Region from OpenAlex where present; otherwise derived from the city, mapped by testing institution coordinates against Natural Earth regional boundaries (197 of 197 known regions reproduced).
+DimInstitution[Region Complete] =
+    IF (
+        LEN ( DimInstitution[Region] ) > 0,
+        DimInstitution[Region],
+        SWITCH (
+            DimInstitution[City],
+            "Alcalá de Henares", "Madrid",
+            "Alcobendas", "Madrid",
+            "Alcoy", "Valencia",
+            "Arganda", "Madrid",
+            "Avilés", "Asturias",
+            "Badajoz", "Extremadura",
+            "Barcelona", "Catalonia",
+            "Beasain", "Basque Country",
+            "Bilbao", "Basque Country",
+            "Blanes", "Catalonia",
+            "Boecillo", "Castille and León",
+            "Carreña", "Asturias",
+            "Cartagena", "Murcia",
+            "Castellon", "Valencia",
+            "Castelló de la Plana", "Valencia",
+            "Cerdanyola del Vallès", "Catalonia",
+            "Ciudad Real", "Castille-La Mancha",
+            "Córdoba", "Andalusia",
+            "Donostia / San Sebastian", "Basque Country",
+            "Eibar", "Basque Country",
+            "Elda", "Valencia",
+            "Elgoibar", "Basque Country",
+            "Getafe", "Madrid",
+            "Getxo", "Basque Country",
+            "Gijón", "Asturias",
+            "Granada", "Andalusia",
+            "Granollers", "Catalonia",
+            "Huesca", "Aragon",
+            "La Orotava", "Canary Islands",
+            "Las Palmas de Gran Canaria", "Canary Islands",
+            "Leioa", "Basque Country",
+            "León", "Castille and León",
+            "Lleida", "Catalonia",
+            "Logroño", "La Rioja",
+            "Madrid", "Madrid",
+            "Martorell", "Catalonia",
+            "Moncada", "Valencia",
+            "Mondragón", "Basque Country",
+            "Murcia", "Murcia",
+            "Navarrete", "La Rioja",
+            "Ourense", "Galicia",
+            "Oviedo", "Asturias",
+            "Pamplona", "Navarre",
+            "Pasaia", "Basque Country",
+            "Paterna", "Valencia",
+            "Pontevedra", "Galicia",
+            "Porriño", "Galicia",
+            "Pozuelo de Alarcón", "Madrid",
+            "Puerto Real", "Andalusia",
+            "Rinconada, La", "Andalusia",
+            "Salamanca", "Castille and León",
+            "San Cristóbal de La Laguna", "Canary Islands",
+            "San Sebastian", "Basque Country",
+            "San Sebastián de los Reyes", "Catalonia",
+            "Santa Cruz de Tenerife", "Canary Islands",
+            "Santander", "Cantabria",
+            "Santiago de Compostela", "Galicia",
+            "Segovia", "Castille and León",
+            "Seville", "Andalusia",
+            "Solsona", "Catalonia",
+            "Tarragona", "Catalonia",
+            "Torrejón de Ardoz", "Madrid",
+            "Valencia", "Valencia",
+            "Valladolid", "Castille and León",
+            "Valldemossa", "Balearic Islands",
+            "Vega de Infanzones", "Castille and León",
+            "Vigo", "Galicia",
+            "Villanueva de la Cañada", "Madrid",
+            "Vitoria-Gasteiz", "Basque Country",
+            "Zamudio", "Basque Country",
+            "Zaragoza", "Aragon",
+            "Not mapped"
+        )
+    )
+
+// Map position: Canary Islands shifted into the inset; invalid coordinates left blank.
+DimInstitution[Map X] =
+    IF (
+        DimInstitution[Latitude] < 27, BLANK (),
+        IF ( DimInstitution[Latitude] < 32, DimInstitution[Longitude] + 8.1, DimInstitution[Longitude] )
+    )
+
+DimInstitution[Map Y] =
+    IF (
+        DimInstitution[Latitude] < 27, BLANK (),
+        IF ( DimInstitution[Latitude] < 32, DimInstitution[Latitude] + 6.4, DimInstitution[Latitude] )
+    )
+
+
+// ---------------------------------------------------------------------
+// CALCULATED COLUMNS on FactPapers  (Table view > FactPapers > New column)
+// ---------------------------------------------------------------------
+FactPapers[SDG 12 Group] = IF ( FactPapers[TaggedSDG12], "SDG 12 tagged", "Not SDG 12" )
+
+FactPapers[Citation Band] =
+    SWITCH (
+        TRUE (),
+        FactPapers[Citations] = 0, "0",
+        FactPapers[Citations] <= 10, "1-10",
+        FactPapers[Citations] <= 50, "11-50",
+        FactPapers[Citations] <= 200, "51-200",
+        "200+"
+    )
+// sortByColumn: 'Citation Band Order'
+
+FactPapers[Citation Band Order] =
+    SWITCH (
+        TRUE (),
+        FactPapers[Citations] = 0, 1,
+        FactPapers[Citations] <= 10, 2,
+        FactPapers[Citations] <= 50, 3,
+        FactPapers[Citations] <= 200, 4,
+        5
+    )
+// formatString: 0
+
+FactPapers[DOI Link] = FactPapers[DOI]
+// dataCategory: WebUrl
+
+
+// ---------------------------------------------------------------------
+// MEASURES  (34 in total, on table _Measures)
+// Grouped by display folder (Properties > Display folder).
+// ---------------------------------------------------------------------
+
+// ----- Volume -----
+
+[Papers] = COUNTROWS ( FactPapers )
+// format: #,0
+
+[Citations] = SUM ( FactPapers[Citations] )
+// format: #,0
+
+[Citations per Paper] = DIVIDE ( [Citations], [Papers] )
+// format: 0.0
+
+[Institutions] = DISTINCTCOUNT ( BridgePaperInstitution[InstitutionID] )
+// format: #,0
+
+[Open Access %] = DIVIDE ( CALCULATE ( [Papers], FactPapers[IsOpenAccess] = TRUE () ), [Papers] )
+// format: 0.0%;-0.0%;0.0%
+
+// ----- Consumption vs production -----
+
+[Consumption Papers] = CALCULATE ( [Papers], FactPapers[MentionsConsumption] = TRUE () )
+// format: #,0
+
+[Consumption %] = DIVIDE ( [Consumption Papers], [Papers] )
+// format: 0.0%;-0.0%;0.0%
+
+[Production Papers] = CALCULATE ( [Papers], FactPapers[MentionsProduction] = TRUE () )
+// format: #,0
+
+[Production %] = DIVIDE ( [Production Papers], [Papers] )
+// format: 0.0%;-0.0%;0.0%
+
+[SDG 12 Papers] = CALCULATE ( [Papers], FactPapers[TaggedSDG12] = TRUE () )
+// format: #,0
+
+[SDG 12 %] = DIVIDE ( [SDG 12 Papers], [Papers] )
+// format: 0.0%;-0.0%;0.0%
+
+[Focus Share %] = DIVIDE ( [Papers], CALCULATE ( [Papers], REMOVEFILTERS ( FactPapers[Focus], FactPapers[Focus Order] ) ) )
+// format: 0.0%;-0.0%;0.0%
+
+// ----- Time intelligence -----
+
+[Papers PY] = CALCULATE ( [Papers], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+// format: #,0
+
+[Papers YoY %] =
+    VAR PapersPrevYear = [Papers PY]
+    RETURN
+        IF ( NOT ISBLANK ( PapersPrevYear ), DIVIDE ( [Papers] - PapersPrevYear, PapersPrevYear ) )
+// format: 0.0%;-0.0%;0.0%
+
+[Papers Cumulative] =
+    VAR MaxVisibleDate = MAX ( DimDate[Date] )
+    RETURN
+        CALCULATE ( [Papers], REMOVEFILTERS ( DimDate ), DimDate[Date] <= MaxVisibleDate )
+// format: #,0
+
+[Consumption % PY] = CALCULATE ( [Consumption %], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+
+[Consumption % YoY (pp)] =
+    VAR PreviousShare = [Consumption % PY]
+    RETURN
+        IF ( NOT ISBLANK ( PreviousShare ), [Consumption %] - PreviousShare )
+// format: 0.000
+
+[Papers YoY % Latest Year] =
+    VAR LatestYear = MAXX ( VALUES ( DimDate[Year] ), DimDate[Year] )
+    RETURN
+        CALCULATE ( [Papers YoY %], DimDate[Year] = LatestYear )
+// format: +0.0%;-0.0%;0.0%
+
+[Consumption pp Change Latest Year] =
+    VAR LatestYear = MAXX ( VALUES ( DimDate[Year] ), DimDate[Year] )
+    RETURN
+        CALCULATE ( [Consumption % YoY (pp)], DimDate[Year] = LatestYear ) * 100
+// format: +0.0" pp";-0.0" pp";0.0" pp"
+
+// ----- Baseline comparison -----
+
+[Expected Consumption %] =
+    VAR ByField =
+        ADDCOLUMNS (
+            VALUES ( DimDiscipline[Field] ),
+            "@Papers", [Papers],
+            "@Rate", LOOKUPVALUE ( BaselineByField[BaselineConsumptionRate], BaselineByField[Field], DimDiscipline[Field] )
+        )
+    RETURN
+        DIVIDE ( SUMX ( ByField, [@Papers] * [@Rate] ), SUMX ( ByField, IF ( NOT ISBLANK ( [@Rate] ), [@Papers] ) ) )
+// format: 0.0%;-0.0%;0.0%
+
+[Expected Production %] =
+    VAR ByField =
+        ADDCOLUMNS (
+            VALUES ( DimDiscipline[Field] ),
+            "@Papers", [Papers],
+            "@Rate", LOOKUPVALUE ( BaselineByField[BaselineProductionRate], BaselineByField[Field], DimDiscipline[Field] )
+        )
+    RETURN
+        DIVIDE ( SUMX ( ByField, [@Papers] * [@Rate] ), SUMX ( ByField, IF ( NOT ISBLANK ( [@Rate] ), [@Papers] ) ) )
+// format: 0.0%;-0.0%;0.0%
+
+[Consumption Lift] = DIVIDE ( [Consumption %], [Expected Consumption %] )
+// format: 0.00
+
+[Production Lift] = DIVIDE ( [Production %], [Expected Production %] )
+// format: 0.00
+
+// ----- Narrative -----
+
+[Msg Growth] =
+    VAR FirstYear = MINX ( VALUES ( DimDate[Year] ), DimDate[Year] )
+    VAR LastYear = MAXX ( VALUES ( DimDate[Year] ), DimDate[Year] )
+    VAR FirstPapers = CALCULATE ( [Papers], DimDate[Year] = FirstYear )
+    VAR LastPapers = CALCULATE ( [Papers], DimDate[Year] = LastYear )
+    RETURN
+        "Output went from " & FORMAT ( FirstPapers, "#,0" ) & " papers in " & FirstYear
+            & " to " & FORMAT ( LastPapers, "#,0" ) & " in " & LastYear
+            & " (" & FORMAT ( DIVIDE ( LastPapers - FirstPapers, FirstPapers ), "+0%;-0%" ) & ")."
+
+[Msg Focus] =
+    FORMAT ( [Consumption %], "0%" ) & " of papers mention consumption and "
+        & FORMAT ( [Production %], "0%" ) & " mention production; "
+        & FORMAT ( CALCULATE ( [Papers], FactPapers[Focus] = "Neither" ) / [Papers], "0%" ) & " mention neither."
+
+[Msg SDG12] =
+    VAR ConsSDG = CALCULATE ( [Consumption %], FactPapers[TaggedSDG12] = TRUE () )
+    VAR ProdSDG = CALCULATE ( [Production %], FactPapers[TaggedSDG12] = TRUE () )
+    RETURN
+        "Within SDG 12 papers, " & FORMAT ( ConsSDG, "0%" ) & " mention consumption and "
+            & FORMAT ( ProdSDG, "0%" ) & " production. Against the baseline, consumption words appear "
+            & FORMAT ( CALCULATE ( [Consumption Lift], FactPapers[TaggedSDG12] = TRUE () ), "0.0" ) & "x as often as expected, production words "
+            & FORMAT ( CALCULATE ( [Production Lift], FactPapers[TaggedSDG12] = TRUE () ), "0.0" ) & "x."
+
+[Latest Year Label] = "Growth in " & MAXX ( VALUES ( DimDate[Year] ), DimDate[Year] ) & " vs previous year"
+
+[Msg Gap] = "Spanish circular economy research looks far more at production: " & FORMAT ( [Production %], "0.0%" ) & " of papers mention it, against " & FORMAT ( [Consumption %], "0.0%" ) & " for consumption."
+
+[Msg Word] = "Production is also the more common word across Spanish research (" & FORMAT ( DIVIDE ( [Expected Production %], [Expected Consumption %] ), "0.0" ) & "x). Adjusting for that, the lead shrinks from " & FORMAT ( [Production Lead], "0.0" ) & "x to " & FORMAT ( [Production Lead Adjusted], "0.0" ) & "x: smaller, but still there."
+
+[Msg Label] = "SDG 12 names both sides, yet production leads " & FORMAT ( CALCULATE ( [Production Lead], FactPapers[TaggedSDG12] = TRUE (), REMOVEFILTERS ( DimDate ) ), "0.0" ) & "x among tagged circular economy papers and " & FORMAT ( CALCULATE ( DIVIDE ( SUM ( StoryGroups[Production] ), SUM ( StoryGroups[Consumption] ) ), StoryGroups[Group] = "All SDG 12 papers" ), "0.0" ) & "x across all Spanish SDG 12 papers, against " & FORMAT ( CALCULATE ( DIVIDE ( SUM ( StoryGroups[Production] ), SUM ( StoryGroups[Consumption] ) ), StoryGroups[Group] = "All Spanish research" ), "0.0" ) & "x in Spanish research overall. The label does not rebalance the field."
+
+// ----- Story -----
+
+[Story Consumption %] =
+    VAR G = SELECTEDVALUE ( StoryGroups[Group] )
+    RETURN
+        SWITCH (
+            G,
+            "CE, SDG 12 tagged", CALCULATE ( [Consumption %], FactPapers[TaggedSDG12] = TRUE () ),
+            "CE, not tagged", CALCULATE ( [Consumption %], FactPapers[TaggedSDG12] = FALSE () ),
+            DIVIDE ( SELECTEDVALUE ( StoryGroups[Consumption] ), SELECTEDVALUE ( StoryGroups[Papers] ) )
+        )
+// format: 0.0%;-0.0%;0.0%
+
+[Story Production %] =
+    VAR G = SELECTEDVALUE ( StoryGroups[Group] )
+    RETURN
+        SWITCH (
+            G,
+            "CE, SDG 12 tagged", CALCULATE ( [Production %], FactPapers[TaggedSDG12] = TRUE () ),
+            "CE, not tagged", CALCULATE ( [Production %], FactPapers[TaggedSDG12] = FALSE () ),
+            DIVIDE ( SELECTEDVALUE ( StoryGroups[Production] ), SELECTEDVALUE ( StoryGroups[Papers] ) )
+        )
+// format: 0.0%;-0.0%;0.0%
+
+[Production Lead] = DIVIDE ( [Production %], [Consumption %] )
+// format: 0.00"x"
+
+[Production Lead Adjusted] = DIVIDE ( [Production Lift], [Consumption Lift] )
+// format: 0.00"x"

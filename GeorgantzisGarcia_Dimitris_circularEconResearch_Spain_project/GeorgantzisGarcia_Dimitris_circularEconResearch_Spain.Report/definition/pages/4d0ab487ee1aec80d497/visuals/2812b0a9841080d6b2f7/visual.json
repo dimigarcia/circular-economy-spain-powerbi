@@ -1,0 +1,49 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "2812b0a9841080d6b2f7",
+  "position": {
+    "x": 40,
+    "y": 0,
+    "z": 1000,
+    "width": 1840,
+    "height": 68,
+    "tabOrder": 1000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Consumption vs production",
+                    "textStyle": {
+                      "fontSize": "24pt",
+                      "color": "#0F172A",
+                      "fontFamily": "Segoe UI Semibold, sans-serif"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "The evidence behind the Summary: the gap over time, the word-frequency check, and the SDG 12 comparison",
+                    "textStyle": {
+                      "fontSize": "12pt",
+                      "color": "#64748B",
+                      "fontFamily": "Segoe UI Variable Text, Segoe UI, sans-serif"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

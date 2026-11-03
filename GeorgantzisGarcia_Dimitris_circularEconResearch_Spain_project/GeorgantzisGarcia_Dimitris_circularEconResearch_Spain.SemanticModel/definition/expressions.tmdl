@@ -1,0 +1,124 @@
+expression fnOpenAlex =
+		(entity as text, filter as text, select as text) as list =>
+		let
+		    BaseQuery = [filter = filter, select = select, per_page = "200"],
+		    Query = BaseQuery,
+		    GetPage = (cursor as text) as record =>
+		        Json.Document(
+		            Web.Contents("https://api.openalex.org", [RelativePath = entity, Query = Query & [cursor = cursor], ApiKeyName = "api_key"])
+		        ),
+		    Pages = List.Generate(
+		        () => GetPage("*"),
+		        each List.Count([results]) > 0,
+		        each if [meta][next_cursor] = null then [results = {}, meta = []] else GetPage([meta][next_cursor])
+		    ),
+		    Results = List.Combine(List.Transform(Pages, each [results]))
+		in
+		    Results
+	lineageTag: 4ac8734b-7102-449e-8b2b-1e8b43919945
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Function
+
+expression TopicSearch =
+		let
+		    Source = "(""circular economy"" OR ""industrial ecology"" OR ""industrial symbiosis"" OR ""life cycle assessment"" OR ""material flow analysis"")"
+		in
+		    Source
+	lineageTag: e4950fba-f357-4922-ab1d-b9ee9b9fa771
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+
+expression BaseFilter =
+		let
+		    Source = "authorships.institutions.country_code:ES,publication_year:2015-2024,title_and_abstract.search:" & TopicSearch
+		in
+		    Source
+	lineageTag: c7f9f438-3ab6-4b7c-82f0-3d5d224fcdec
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+
+expression ConsumptionTerms =
+		let
+		    Source = "(consumption OR consumer OR consumers OR household OR households OR sufficiency OR ""demand-side"")"
+		in
+		    Source
+	lineageTag: e4913861-5ce3-4f9b-9759-4e1a98978f02
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+
+expression ProductionTerms =
+		let
+		    Source = "(production OR manufacturing OR producer OR producers OR ""industrial process"" OR ""supply chain"")"
+		in
+		    Source
+	lineageTag: 3058455c-7c5e-4d19-a74b-14f67d3d7430
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+
+expression WorksRaw =
+		let
+		    Source = fnOpenAlex(
+		        "works",
+		        BaseFilter,
+		        "id,doi,title,publication_date,type,cited_by_count,open_access,primary_topic,primary_location,authorships,sustainable_development_goals"
+		    ),
+		    ToTable = Table.FromRecords(
+		        Source,
+		        {"id", "doi", "title", "publication_date", "type", "cited_by_count", "open_access", "primary_topic", "primary_location", "authorships", "sustainable_development_goals"},
+		        MissingField.UseNull
+		    ),
+		    // Shorten the OpenAlex URL ids (https://openalex.org/W123 -> W123)
+		    CleanId = Table.TransformColumns(ToTable, {{"id", each Text.AfterDelimiter(_, "/", {0, RelativePosition.FromEnd}), type text}}),
+		    RemoveDuplicates = Table.Distinct(CleanId, {"id"})
+		in
+		    RemoveDuplicates
+	lineageTag: 00a5e5cc-6fbd-4623-b595-daec982f3c30
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression ConsumptionIds =
+		let
+		    Filter = "authorships.institutions.country_code:ES,publication_year:2015-2024,title_and_abstract.search:"
+		        & TopicSearch
+		        & " AND " & ConsumptionTerms,
+		    Source = fnOpenAlex("works", Filter, "id"),
+		    ToTable = Table.FromRecords(Source, {"id"}, MissingField.UseNull),
+		    CleanId = Table.TransformColumns(ToTable, {{"id", each Text.AfterDelimiter(_, "/", {0, RelativePosition.FromEnd}), type text}}),
+		    Flag = Table.AddColumn(Table.Distinct(CleanId), "MentionsConsumption", each true, type logical)
+		in
+		    Flag
+	lineageTag: 74e8e5b9-db1b-483b-9be3-e655ec9b4d87
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression ProductionIds =
+		let
+		    Filter = "authorships.institutions.country_code:ES,publication_year:2015-2024,title_and_abstract.search:"
+		        & TopicSearch
+		        & " AND " & ProductionTerms,
+		    Source = fnOpenAlex("works", Filter, "id"),
+		    ToTable = Table.FromRecords(Source, {"id"}, MissingField.UseNull),
+		    CleanId = Table.TransformColumns(ToTable, {{"id", each Text.AfterDelimiter(_, "/", {0, RelativePosition.FromEnd}), type text}}),
+		    Flag = Table.AddColumn(Table.Distinct(CleanId), "MentionsProduction", each true, type logical)
+		in
+		    Flag
+	lineageTag: 7f6bd1f0-981d-4e68-b396-cc21f1a58b5a
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

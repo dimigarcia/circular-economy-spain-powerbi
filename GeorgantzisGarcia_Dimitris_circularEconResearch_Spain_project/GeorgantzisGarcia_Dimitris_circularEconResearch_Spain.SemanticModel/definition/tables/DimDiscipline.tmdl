@@ -1,0 +1,68 @@
+table DimDiscipline
+	lineageTag: 5d6d89f7-650d-4f51-8617-3bd7aed7c54d
+
+	column TopicID
+		dataType: string
+		isHidden
+		lineageTag: cfdc9253-f973-4086-bf1e-904a3e25f641
+		summarizeBy: none
+		sourceColumn: TopicID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Topic
+		dataType: string
+		lineageTag: 623ac138-827f-4057-b7f3-a3ad621ead3a
+		summarizeBy: none
+		sourceColumn: Topic
+
+		annotation SummarizationSetBy = Automatic
+
+	column Subfield
+		dataType: string
+		lineageTag: a453d535-1f5a-46b2-bf0d-3f8428b6ee6a
+		summarizeBy: none
+		sourceColumn: Subfield
+
+		annotation SummarizationSetBy = Automatic
+
+	column Field
+		dataType: string
+		lineageTag: b948ea4c-6cc6-44ee-b9f1-f1191210d3a2
+		summarizeBy: none
+		sourceColumn: Field
+
+		annotation SummarizationSetBy = Automatic
+
+	column Domain
+		dataType: string
+		lineageTag: 737f42ef-6880-4673-8272-e201314588aa
+		summarizeBy: none
+		sourceColumn: Domain
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimDiscipline = m
+		mode: import
+		source =
+				let
+				    Source = WorksRaw,
+				    Rows = Table.AddColumn(Source, "R", each [
+				        TopicID = try Text.AfterDelimiter([primary_topic][id], "/", {0, RelativePosition.FromEnd}) otherwise "none",
+				        Topic = try [primary_topic][display_name] otherwise "Unclassified",
+				        Subfield = try [primary_topic][subfield][display_name] otherwise "Unclassified",
+				        Field = try [primary_topic][field][display_name] otherwise "Unclassified",
+				        Domain = try [primary_topic][domain][display_name] otherwise "Unclassified"
+				    ]),
+				    Expand = Table.ExpandRecordColumn(Table.SelectColumns(Rows, {"R"}), "R", {"TopicID", "Topic", "Subfield", "Field", "Domain"}),
+				    Distinct = Table.Distinct(Expand, {"TopicID"}),
+				    Types = Table.TransformColumnTypes(Distinct, {{"TopicID", type text}, {"Topic", type text}, {"Subfield", type text}, {"Field", type text}, {"Domain", type text}})
+				in
+				    Types
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

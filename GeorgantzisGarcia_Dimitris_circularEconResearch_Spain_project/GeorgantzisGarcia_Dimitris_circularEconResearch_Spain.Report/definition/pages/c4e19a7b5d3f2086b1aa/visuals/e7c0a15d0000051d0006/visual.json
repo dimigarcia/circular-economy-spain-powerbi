@@ -1,0 +1,49 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "e7c0a15d0000051d0006",
+  "position": {
+    "x": 40,
+    "y": 0,
+    "z": 1000,
+    "width": 1840,
+    "height": 68,
+    "tabOrder": 1000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Where it happens",
+                    "textStyle": {
+                      "fontSize": "24pt",
+                      "color": "#0F172A",
+                      "fontFamily": "Segoe UI Semibold, sans-serif"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Is the gap local or national? Production leads across the country. Boundaries: Natural Earth",
+                    "textStyle": {
+                      "fontSize": "12pt",
+                      "color": "#64748B",
+                      "fontFamily": "Segoe UI Variable Text, Segoe UI, sans-serif"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

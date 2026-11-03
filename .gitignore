@@ -1,0 +1,7 @@
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+*.pbix
+*.zip
+*.pdf
+
+notrack*

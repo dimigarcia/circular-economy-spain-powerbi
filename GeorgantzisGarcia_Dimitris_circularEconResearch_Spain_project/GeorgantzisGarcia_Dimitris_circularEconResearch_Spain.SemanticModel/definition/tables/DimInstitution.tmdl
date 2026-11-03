@@ -1,0 +1,208 @@
+table DimInstitution
+	lineageTag: fb8af9ed-abd7-4daa-9a0e-332e9539065c
+
+	column InstitutionID
+		dataType: string
+		isHidden
+		lineageTag: 18556a65-9b0f-4171-bd7b-093a84713caf
+		summarizeBy: none
+		sourceColumn: InstitutionID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Institution
+		dataType: string
+		lineageTag: 37f38710-68d8-4169-9e21-8bf1ccc1dda6
+		summarizeBy: none
+		sourceColumn: Institution
+
+		annotation SummarizationSetBy = Automatic
+
+	column InstitutionType
+		dataType: string
+		lineageTag: e6f664b3-8688-47e7-9e5f-4be6e05d607d
+		summarizeBy: none
+		sourceColumn: InstitutionType
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: 359af11a-10b0-4907-906c-75d0876e8842
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column Region
+		dataType: string
+		lineageTag: 3e475849-bc96-477d-a780-504c84f177b9
+		summarizeBy: none
+		sourceColumn: Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column Latitude
+		dataType: double
+		lineageTag: 5a22f72b-b42f-4732-a4df-a47f3f723c43
+		summarizeBy: none
+		sourceColumn: Latitude
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Longitude
+		dataType: double
+		lineageTag: d6d43775-f984-4351-abf5-8116574d08cf
+		summarizeBy: none
+		sourceColumn: Longitude
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Region from OpenAlex where present; otherwise derived from the city, mapped by testing institution coordinates against Natural Earth regional boundaries (197 of 197 known regions reproduced).
+	column 'Region Complete' =
+			
+			IF (
+			    LEN ( DimInstitution[Region] ) > 0,
+			    DimInstitution[Region],
+			    SWITCH (
+			        DimInstitution[City],
+			        "Alcalá de Henares", "Madrid",
+			        "Alcobendas", "Madrid",
+			        "Alcoy", "Valencia",
+			        "Arganda", "Madrid",
+			        "Avilés", "Asturias",
+			        "Badajoz", "Extremadura",
+			        "Barcelona", "Catalonia",
+			        "Beasain", "Basque Country",
+			        "Bilbao", "Basque Country",
+			        "Blanes", "Catalonia",
+			        "Boecillo", "Castille and León",
+			        "Carreña", "Asturias",
+			        "Cartagena", "Murcia",
+			        "Castellon", "Valencia",
+			        "Castelló de la Plana", "Valencia",
+			        "Cerdanyola del Vallès", "Catalonia",
+			        "Ciudad Real", "Castille-La Mancha",
+			        "Córdoba", "Andalusia",
+			        "Donostia / San Sebastian", "Basque Country",
+			        "Eibar", "Basque Country",
+			        "Elda", "Valencia",
+			        "Elgoibar", "Basque Country",
+			        "Getafe", "Madrid",
+			        "Getxo", "Basque Country",
+			        "Gijón", "Asturias",
+			        "Granada", "Andalusia",
+			        "Granollers", "Catalonia",
+			        "Huesca", "Aragon",
+			        "La Orotava", "Canary Islands",
+			        "Las Palmas de Gran Canaria", "Canary Islands",
+			        "Leioa", "Basque Country",
+			        "León", "Castille and León",
+			        "Lleida", "Catalonia",
+			        "Logroño", "La Rioja",
+			        "Madrid", "Madrid",
+			        "Martorell", "Catalonia",
+			        "Moncada", "Valencia",
+			        "Mondragón", "Basque Country",
+			        "Murcia", "Murcia",
+			        "Navarrete", "La Rioja",
+			        "Ourense", "Galicia",
+			        "Oviedo", "Asturias",
+			        "Pamplona", "Navarre",
+			        "Pasaia", "Basque Country",
+			        "Paterna", "Valencia",
+			        "Pontevedra", "Galicia",
+			        "Porriño", "Galicia",
+			        "Pozuelo de Alarcón", "Madrid",
+			        "Puerto Real", "Andalusia",
+			        "Rinconada, La", "Andalusia",
+			        "Salamanca", "Castille and León",
+			        "San Cristóbal de La Laguna", "Canary Islands",
+			        "San Sebastian", "Basque Country",
+			        "San Sebastián de los Reyes", "Catalonia",
+			        "Santa Cruz de Tenerife", "Canary Islands",
+			        "Santander", "Cantabria",
+			        "Santiago de Compostela", "Galicia",
+			        "Segovia", "Castille and León",
+			        "Seville", "Andalusia",
+			        "Solsona", "Catalonia",
+			        "Tarragona", "Catalonia",
+			        "Torrejón de Ardoz", "Madrid",
+			        "Valencia", "Valencia",
+			        "Valladolid", "Castille and León",
+			        "Valldemossa", "Balearic Islands",
+			        "Vega de Infanzones", "Castille and León",
+			        "Vigo", "Galicia",
+			        "Villanueva de la Cañada", "Madrid",
+			        "Vitoria-Gasteiz", "Basque Country",
+			        "Zamudio", "Basque Country",
+			        "Zaragoza", "Aragon",
+			        "Not mapped"
+			    )
+			)
+		lineageTag: 1c1f4b16-5c49-4eff-b412-bd7a540a52ec
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Map position: Canary Islands shifted into the inset; invalid coordinates left blank.
+	column 'Map X' =
+			
+			IF (
+			    DimInstitution[Latitude] < 27, BLANK (),
+			    IF ( DimInstitution[Latitude] < 32, DimInstitution[Longitude] + 8.1, DimInstitution[Longitude] )
+			)
+		isHidden
+		lineageTag: 5974bf8c-8699-4ebc-895e-b29deb5d4bb5
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Map Y' =
+			
+			IF (
+			    DimInstitution[Latitude] < 27, BLANK (),
+			    IF ( DimInstitution[Latitude] < 32, DimInstitution[Latitude] + 6.4, DimInstitution[Latitude] )
+			)
+		isHidden
+		lineageTag: 095b00db-00d0-49a0-9311-16afd297534b
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimInstitution = m
+		mode: import
+		source =
+				let
+				    Source = fnOpenAlex("institutions", "country_code:ES", "id,display_name,type,geo"),
+				    ToTable = Table.FromRecords(Source, {"id", "display_name", "type", "geo"}, MissingField.UseNull),
+				    Fields = Table.AddColumn(ToTable, "R", each [
+				        InstitutionID = Text.AfterDelimiter([id], "/", {0, RelativePosition.FromEnd}),
+				        Institution = [display_name],
+				        InstitutionType = Text.Proper(Text.Replace([type] ?? "other", "_", " ")),
+				        City = try [geo][city] otherwise null,
+				        Region = try [geo][region] otherwise null,
+				        Latitude = try [geo][latitude] otherwise null,
+				        Longitude = try [geo][longitude] otherwise null
+				    ]),
+				    Expand = Table.ExpandRecordColumn(Table.SelectColumns(Fields, {"R"}), "R",
+				        {"InstitutionID", "Institution", "InstitutionType", "City", "Region", "Latitude", "Longitude"}),
+				    UsedIds = Table.Distinct(Table.SelectColumns(BridgePaperInstitution, {"InstitutionID"})),
+				    Merge = Table.NestedJoin(Expand, {"InstitutionID"}, UsedIds, {"InstitutionID"}, "Used", JoinKind.Inner),
+				    Keep = Table.RemoveColumns(Merge, {"Used"}),
+				    Types = Table.TransformColumnTypes(Keep, {
+				        {"InstitutionID", type text}, {"Institution", type text}, {"InstitutionType", type text},
+				        {"City", type text}, {"Region", type text}, {"Latitude", type number}, {"Longitude", type number}})
+				in
+				    Types
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

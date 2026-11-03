@@ -1,0 +1,67 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/2.1.0/schema.json",
+  "displayName": "Count view",
+  "name": "bm_count_view",
+  "options": {
+    "applyOnlyToTargetVisuals": true,
+    "targetVisualNames": [
+      "38a00d6780f048ca2c3d",
+      "d9c1602fee25170e1b80",
+      "218a4068a53d52b5cfcd",
+      "528b798e4d5b50c5b134",
+      "a1f3c7d24e6b80915c2e",
+      "b7e2d9046a1c35f8d4a7"
+    ],
+    "suppressActiveSection": true,
+    "suppressData": true
+  },
+  "explorationState": {
+    "version": "1.0",
+    "activeSection": "4d0ab487ee1aec80d497",
+    "sections": {
+      "4d0ab487ee1aec80d497": {
+        "visualContainers": {
+          "38a00d6780f048ca2c3d": {
+            "singleVisual": {
+              "visualType": "hundredPercentStackedColumnChart",
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "d9c1602fee25170e1b80": {
+            "singleVisual": {
+              "visualType": "hundredPercentStackedColumnChart",
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "218a4068a53d52b5cfcd": {
+            "singleVisual": {
+              "visualType": "columnChart"
+            }
+          },
+          "528b798e4d5b50c5b134": {
+            "singleVisual": {
+              "visualType": "columnChart"
+            }
+          },
+          "a1f3c7d24e6b80915c2e": {
+            "singleVisual": {
+              "visualType": "actionButton",
+              "display": {
+                "mode": "hidden"
+              }
+            }
+          },
+          "b7e2d9046a1c35f8d4a7": {
+            "singleVisual": {
+              "visualType": "actionButton"
+            }
+          }
+        }
+      }
+    }
+  }
+}

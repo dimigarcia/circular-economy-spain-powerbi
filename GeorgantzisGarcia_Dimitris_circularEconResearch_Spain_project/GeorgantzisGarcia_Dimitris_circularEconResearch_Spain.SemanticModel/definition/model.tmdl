@@ -1,0 +1,27 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-GB
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["TopicSearch","BaseFilter","ConsumptionTerms","ProductionTerms","fnOpenAlex","WorksRaw","ConsumptionIds","ProductionIds","FactPapers","DimDiscipline","DimSource","BridgePaperInstitution","DimInstitution","BaselineByField","_Measures"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table FactPapers
+ref table DimDiscipline
+ref table DimSource
+ref table BridgePaperInstitution
+ref table DimInstitution
+ref table BaselineByField
+ref table DimDate
+ref table _Measures
+ref table StoryGroups
+
+ref cultureInfo en-US
+

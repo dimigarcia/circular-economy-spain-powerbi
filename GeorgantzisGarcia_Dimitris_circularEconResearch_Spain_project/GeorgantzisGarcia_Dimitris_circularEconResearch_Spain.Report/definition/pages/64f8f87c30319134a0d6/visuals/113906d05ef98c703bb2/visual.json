@@ -1,0 +1,49 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "113906d05ef98c703bb2",
+  "position": {
+    "x": 40,
+    "y": 4,
+    "z": 1000,
+    "width": 1600,
+    "height": 92,
+    "tabOrder": 1000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Paper detail",
+                    "textStyle": {
+                      "fontSize": "24pt",
+                      "color": "#0F172A",
+                      "fontFamily": "Segoe UI Semibold, sans-serif"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Every paper behind the selection. Reached by drill through from an institution or field",
+                    "textStyle": {
+                      "fontSize": "12pt",
+                      "color": "#64748B",
+                      "fontFamily": "Segoe UI Variable Text, Segoe UI, sans-serif"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
