@@ -97,8 +97,8 @@ queries/*.pq        every Power Query query, one file each (copy of what the pro
 measures.dax        calendar table, calculated columns and all measures (copy of what the project uses)
 theme.json          the report theme
 docs/
-├── GeorgantzisGarcia_Dimitris_TrabajoPBI.html   explanatory document (source of the PDF)
-└── screenshots/                                 one image per page, plus the model view
+├── index.html      explanatory document (served by GitHub Pages; source of the PDF)
+└── screenshots/    one image per page, plus the model view
 ```
 
 `queries/`, `measures.dax` and `theme.json` are readable copies for reference. The `.pbip` project is the source of truth.
