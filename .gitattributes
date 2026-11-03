@@ -1,0 +1,8 @@
+# Store text files with LF in the repo; Git converts to the platform's line endings on checkout.
+* text=auto
+
+# Binary files: never convert.
+*.png  binary
+*.jpg  binary
+*.pbix binary
+*.abf  binary
